@@ -116,6 +116,25 @@ func diffAutoscalingTags(oldTags, newTags []*autoscaling.Tag, resourceID string)
 }
 
 // tagsFromMap returns the tags for the given map of data.
+func autoscalingTagsFromFlatMap(m map[string]interface{}, resourceID string, propagate bool) []*autoscaling.Tag {
+	result := make([]*autoscaling.Tag, 0, len(m))
+	for k, v := range m {
+		t := &autoscaling.Tag{
+			Key:               aws.String(k),
+			Value:             aws.String(v.(string)),
+			PropagateAtLaunch: aws.Bool(propagate),
+			ResourceId:        aws.String(resourceID),
+			ResourceType:      aws.String("auto-scaling-group"),
+		}
+		if !tagIgnoredAutoscaling(t) {
+			result = append(result, t)
+		}
+	}
+
+	return result
+}
+
+// tagsFromMap returns the tags for the given map of data.
 func autoscalingTagsFromMap(m map[string]interface{}, resourceID string) []*autoscaling.Tag {
 	result := make([]*autoscaling.Tag, 0, len(m))
 	for k, v := range m {

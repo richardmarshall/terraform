@@ -100,6 +100,8 @@ Application Load Balancing
 * `suspended_processes` - (Optional) A list of processes to suspend for the AutoScaling Group. The allowed values are `Launch`, `Terminate`, `HealthCheck`, `ReplaceUnhealthy`, `AZRebalance`, `AlarmNotification`, `ScheduledActions`, `AddToLoadBalancer`.
 Note that if you suspend either the `Launch` or `Terminate` process types, it can prevent your autoscaling group from functioning properly.
 * `tag` (Optional) A list of tag blocks. Tags documented below.
+* `tags` (Optional) A mapping of tags to assign to the resource.
+* `tags_propagated` (Optional) A mapping of tags that will be propagated to instances to assign to the resource.
 * `placement_group` (Optional) The name of the placement group into which you'll launch your instances, if any.
 * `metrics_granularity` - (Optional) The granularity to associate with the metrics to collect. The only valid value is `1Minute`. Default is `1Minute`.
 * `enabled_metrics` - (Optional) A list of metrics to collect. The allowed values are `GroupMinSize`, `GroupMaxSize`, `GroupDesiredCapacity`, `GroupInServiceInstances`, `GroupPendingInstances`, `GroupStandbyInstances`, `GroupTerminatingInstances`, `GroupTotalInstances`.

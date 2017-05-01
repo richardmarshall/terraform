@@ -245,6 +245,10 @@ func resourceAwsAutoscalingGroup() *schema.Resource {
 			},
 
 			"tag": autoscalingTagsSchema(),
+
+			"tags": tagsSchema(),
+
+			"tags_propagated": tagsSchema(),
 		},
 	}
 }
@@ -344,10 +348,27 @@ func resourceAwsAutoscalingGroupCreate(d *schema.ResourceData, meta interface{})
 		createOpts.AvailabilityZones = expandStringList(v.(*schema.Set).List())
 	}
 
+	tagSpec := make([]*autoscaling.Tag, 0)
+
 	if v, ok := d.GetOk("tag"); ok {
-		createOpts.Tags = autoscalingTagsFromMap(
+		tags := autoscalingTagsFromMap(
 			setToMapByKey(v.(*schema.Set), "key"), d.Get("name").(string))
+		tagSpec = append(tagSpec, tags...)
 	}
+
+	if v, ok := d.GetOk("tags"); ok {
+		tags := autoscalingTagsFromFlatMap(
+			v.(map[string]interface{}), d.Get("name").(string), false)
+		tagSpec = append(tagSpec, tags...)
+	}
+
+	if v, ok := d.GetOk("tags_propagated"); ok {
+		tags := autoscalingTagsFromFlatMap(
+			v.(map[string]interface{}), d.Get("name").(string), true)
+		tagSpec = append(tagSpec, tags...)
+	}
+
+	createOpts.Tags = tagSpec
 
 	if v, ok := d.GetOk("default_cooldown"); ok {
 		createOpts.DefaultCooldown = aws.Int64(int64(v.(int)))
